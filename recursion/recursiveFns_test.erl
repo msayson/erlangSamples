@@ -11,7 +11,7 @@
 
 -module(recursiveFns_test).
 
--import(recursiveFns, [nthtail/2, prefix/2]).
+-import(recursiveFns, [nthtail/2, prefix/2, search/2]).
 
 -include_lib("eunit/include/eunit.hrl").
 
@@ -41,4 +41,16 @@ prefix_test() ->
       ?assert(prefix("help", "hello") =:= false),
       ?assert(assert_fail(fun recursiveFns:prefix/2, [1, [1]], error, function_clause) =:= ok),
       ?assert(assert_fail(fun recursiveFns:prefix/2, [[1], 1], error, function_clause) =:= ok)
+   ].
+
+search_test() ->
+   [  ?assert(assert_fail(fun recursiveFns:search/2, [1, [1]], error, function_clause) =:= ok),
+      ?assert(assert_fail(fun recursiveFns:search/2, [[1], 1], error, function_clause) =:= ok),
+      ?assertEqual([], search([1,2], [])),
+      ?assertEqual([], search([1,2,3], [1,2])),
+      ?assertEqual([1], search([], [])), % [] is a prefix of []
+      ?assertEqual([1,2,3], search([], "hi")),
+      ?assertEqual([], search([1,2,3], [1,2])),
+      ?assertEqual([1], search([1,2], [1,2,3,4])),
+      ?assertEqual([2,4], search("an", "banana"))
    ].
