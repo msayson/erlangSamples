@@ -11,7 +11,7 @@
 
 -module(recursiveFns_test).
 
--import(recursiveFns, [nthtail/2]).
+-import(recursiveFns, [nthtail/2, prefix/2]).
 
 -include_lib("eunit/include/eunit.hrl").
 
@@ -23,11 +23,22 @@ assert_fail(Fun, Args, ExceptionType, ExceptionValue) ->
    end.
 
 nthtail_test() ->
-  [ ?assertEqual([], nthtail(2, [])),
-    ?assertEqual([], nthtail(2, [1,2])),
-    ?assertEqual([5], nthtail(0, [5])),
-    ?assertEqual([3,4], nthtail(2, [1,2,3,4])),
-    ?assertEqual("llo", nthtail(2, "hello")),
-    ?assert(assert_fail(fun recursiveFns:nthtail/2, [-2, [2, 3]], error, function_clause) =:= ok),
-    ?assert(assert_fail(fun recursiveFns:nthtail/2, [2, 3], error, function_clause) =:= ok),
-    ?assert(assert_fail(fun recursiveFns:nthtail/2, [[1], [5]], error, function_clause) =:= ok)].
+   [  ?assertEqual([], nthtail(2, [])),
+      ?assertEqual([], nthtail(2, [1,2])),
+      ?assertEqual([5], nthtail(0, [5])),
+      ?assertEqual([3,4], nthtail(2, [1,2,3,4])),
+      ?assertEqual("llo", nthtail(2, "hello")),
+      ?assert(assert_fail(fun recursiveFns:nthtail/2, [-2, [2, 3]], error, function_clause) =:= ok),
+      ?assert(assert_fail(fun recursiveFns:nthtail/2, [2, 3], error, function_clause) =:= ok),
+      ?assert(assert_fail(fun recursiveFns:nthtail/2, [[1], [5]], error, function_clause) =:= ok)
+   ].
+
+prefix_test() ->
+   [  ?assert(prefix([], [1,2,3])),
+      ?assert(prefix([1,2,3], [1,2,3])),
+      ?assert(prefix("he", "hello")),
+      ?assert(prefix("a", "hello") =:= false),
+      ?assert(prefix("help", "hello") =:= false),
+      ?assert(assert_fail(fun recursiveFns:prefix/2, [1, [1]], error, function_clause) =:= ok),
+      ?assert(assert_fail(fun recursiveFns:prefix/2, [[1], 1], error, function_clause) =:= ok)
+   ].
