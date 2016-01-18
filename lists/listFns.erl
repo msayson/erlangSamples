@@ -1,5 +1,5 @@
 -module(listFns).
--export([nthtail/2, prefix/2, search/2]).
+-export([nthtail/2, prefix/2, search/2, subtract/2]).
 
 % Returns nth tail of a list
 % Requires N to be a non-negative integer and L to be a list
@@ -42,4 +42,20 @@ search_helper(L1, L2, Pos, Indices) ->
    case prefix(L1, L2) of
       true -> search_helper(L1, tl(L2), Pos + 1, Indices ++ [Pos]);
       false -> search_helper(L1, tl(L2), Pos + 1, Indices)
+   end.
+
+% subtract(List1, List2) returns "subtraction" of List2 from List1
+% Returned subtraction is sorted by value
+subtract(List1, List2)
+   when (is_list(List1) and is_list(List2)) ->
+      subtract_helper(lists:sort(List1), lists:sort(List2)).
+
+% Assume sorted input lists
+subtract_helper([], _) -> [];
+subtract_helper(L, []) -> L;
+subtract_helper([H|T1], [H|T2]) -> subtract_helper(T1, T2);
+subtract_helper([H1|T1], [H2|T2]) ->
+   if
+      H1 < H2 -> [H1] ++ subtract_helper(T1, [H2|T2]);
+      true    -> subtract_helper([H1|T1], T2)
    end.

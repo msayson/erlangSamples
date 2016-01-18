@@ -11,7 +11,7 @@
 
 -module(listFns_test).
 
--import(listFns, [nthtail/2, prefix/2, search/2]).
+-import(listFns, [nthtail/2, prefix/2, search/2, subtract/2]).
 
 -include_lib("eunit/include/eunit.hrl").
 
@@ -53,4 +53,13 @@ search_test() ->
       ?assertEqual([], search([1,2,3], [1,2])),
       ?assertEqual([1], search([1,2], [1,2,3,4])),
       ?assertEqual([2,4], search("an", "banana"))
+   ].
+
+subtract_test() ->
+   [  ?assert(assert_fail(fun listFns:subtract/2, [1, [1]], error, function_clause) =:= ok),
+      ?assert(assert_fail(fun listFns:subtract/2, [[1], 1], error, function_clause) =:= ok),
+      ?assertEqual([], subtract([], [1,2])),
+      ?assertEqual([3,4], subtract([3,4], [])),
+      ?assertEqual([3,4], subtract([2,4,1,3], [1,2])),
+      ?assertEqual([3,3,4], subtract([2,3,3,4,1,3], [3,2,1]))
    ].
