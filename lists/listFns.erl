@@ -1,4 +1,4 @@
--module(recursiveFns).
+-module(listFns).
 -export([nthtail/2, prefix/2, search/2]).
 
 % Returns nth tail of a list
