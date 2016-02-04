@@ -1,7 +1,7 @@
 -module(countInstances).
 
 -export [
-      runLengthEncode/1, runLengthEncodeWithPos/1, appendRunLengthEncodingWithPos/2,
+      runLengthEncode/1, runLengthEncodeWithPos/1, longestRunOfV/2, appendRunLengthEncodingWithPos/2,
       addToCounts/2, addToConsecutiveCounts/2, addToConsecCountsWithPos/3
    ].
 
@@ -29,6 +29,25 @@ runLengthEncodeWithPos(L) when is_list(L) ->
 rlep([], Counts, _) -> Counts;
 rlep([H|T], Counts, Pos) ->
   rlep(T, addToConsecCountsWithPos(H, Counts, Pos), Pos+1).
+
+% Returns longest run of Val in a run-length-position encoded list,
+% in form {Length, Position}
+%
+% Examples:
+% longestRunOfV([], a) -> {0,0}
+% longestRunOfV([{a,2,0},{b,2,2},{a,1,4}], a) -> {2,0}
+% longestRunOfV([{a,2,0},{b,2,2},{a,3,4}], a) -> {3,4}
+longestRunOfV(L, Val) when is_list(L) ->
+  longestRunOfV(L, Val, 0, 0).
+longestRunOfV([], _, LenLongest, PosLongest) -> {LenLongest, PosLongest};
+longestRunOfV([{Val,Length,Pos}|T], Val, LenLongestSoFar, PosLongestSoFar) ->
+  {LenLongest, PosLongest} = if
+    Length > LenLongestSoFar -> {Length, Pos};
+    true                     -> {LenLongestSoFar, PosLongestSoFar}
+  end,
+  longestRunOfV(T, Val, LenLongest, PosLongest);
+longestRunOfV([_|T], Val, LenLongestSoFar, PosLongestSoFar) ->
+  longestRunOfV(T, Val, LenLongestSoFar, PosLongestSoFar).
 
 % Appends two run-length encodings with positions
 %
@@ -79,7 +98,6 @@ addToConsecutiveCounts(Item, [H|T]) ->
 % addToConsecCountsWithPos(a, [], 0) -> [{a, 1, 0}]
 % addToConsecCountsWithPos(a, [{a, 1, 0}], 1) -> [{a, 2, 0}]
 % addToConsecCountsWithPos(b, [{a, 2, 0}], 2) -> [{a, 2, 0}, {b, 1, 2}]
-
 addToConsecCountsWithPos(Item, [], Pos) -> [{Item, 1, Pos}];
 addToConsecCountsWithPos(Item, [{Item, Count, Pos}], _) ->
   [{Item, Count + 1, Pos}];

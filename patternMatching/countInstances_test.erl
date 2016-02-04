@@ -1,7 +1,7 @@
 -module(countInstances_test).
 
 -import(countInstances, [
-      runLengthEncode/1, runLengthEncodeWithPos/1, appendRunLengthEncodingWithPos/2,
+      runLengthEncode/1, runLengthEncodeWithPos/1, longestRunOfV/2, appendRunLengthEncodingWithPos/2,
       addToCounts/2, addToConsecutiveCounts/2, addToConsecCountsWithPos/3
    ]).
 
@@ -18,6 +18,13 @@ runLengthEncodeWithPos_test() ->
    [  ?assertEqual([], runLengthEncodeWithPos([])),
       ?assertEqual([{a,3,0}], runLengthEncodeWithPos([a,a,a])),
       ?assertEqual([{a,2,0}, {b,3,2}, {a,1,5}], runLengthEncodeWithPos([a,a,b,b,b,a]))
+   ].
+
+longestRunOfV_test() ->
+   [  ?assertEqual({0,0}, longestRunOfV([], a)),
+      ?assertEqual({0,0}, longestRunOfV([{a,1,0},{b,2,1}], z)),
+      ?assertEqual({2,0}, longestRunOfV([{a,2,0}], a)),
+      ?assertEqual({3,4}, longestRunOfV([{a,1,0},{b,3,1},{a,3,4},{b,1,7}], a))
    ].
 
 appendRunLengthEncodingWithPos_test() ->
