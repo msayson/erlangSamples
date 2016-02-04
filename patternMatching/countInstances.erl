@@ -1,7 +1,7 @@
 -module(countInstances).
 
 -export [
-      runLengthEncode/1, runLengthEncodeWithPos/1,
+      runLengthEncode/1, runLengthEncodeWithPos/1, appendRunLengthEncodingWithPos/2,
       addToCounts/2, addToConsecutiveCounts/2, addToConsecCountsWithPos/3
    ].
 
@@ -26,10 +26,25 @@ rle([H|T], Counts) ->
 % runLengthEncodeWithPos([1,2,2,2,3,3,1]) -> [{1,1,0},{2,3,1},{3,2,4},{1,1,6}]
 runLengthEncodeWithPos(L) when is_list(L) ->
   rlep(L, [], 0).
-
 rlep([], Counts, _) -> Counts;
 rlep([H|T], Counts, Pos) ->
   rlep(T, addToConsecCountsWithPos(H, Counts, Pos), Pos+1).
+
+% Appends two run-length encodings with positions
+%
+% Examples:
+% appendRunLengthEncodingWithPos([{a,2,0}], [{a,4,2}]) -> [{a,6,0}]
+% appendRunLengthEncodingWithPos([{a,2,0}], [{b,1,2}, {a,1,3}]) -> [{a,2,0},{b,1,2},{a,1,3}]
+appendRunLengthEncodingWithPos([], L) -> L;
+appendRunLengthEncodingWithPos(L, []) -> L;
+appendRunLengthEncodingWithPos([{Item, Count1, Pos1}], [{Item, Count2, _}|T]) ->
+  [{Item, Count1 + Count2, Pos1} | addIndexToRuns(T, Pos1)];
+appendRunLengthEncodingWithPos([H], L2) -> [H|L2];
+appendRunLengthEncodingWithPos([H|T], L2) -> [H|appendRunLengthEncodingWithPos(T, L2)].
+
+addIndexToRuns([], _) -> [];
+addIndexToRuns([{Item, Count, Pos}|T], Offset) ->
+  [{Item, Count, Pos+Offset} | addIndexToRuns(T, Offset)].
 
 % Adds an item to a list encoding the total number of
 % appearances of each item in the list.
