@@ -57,8 +57,9 @@ longestRunOfV([_|T], Val, LenLongestSoFar, PosLongestSoFar) ->
 appendRunLengthEncodingWithPos([], L) -> L;
 appendRunLengthEncodingWithPos(L, []) -> L;
 appendRunLengthEncodingWithPos([{Item, Count1, Pos1}], [{Item, Count2, _}|T]) ->
-  [{Item, Count1 + Count2, Pos1} | addIndexToRuns(T, Pos1)];
-appendRunLengthEncodingWithPos([H], L2) -> [H|L2];
+  [{Item, Count1 + Count2, Pos1} | addIndexToRuns(T, Count1+Pos1)];
+appendRunLengthEncodingWithPos([{Item, Count1, Pos1}], L2) ->
+  [{Item, Count1, Pos1} | addIndexToRuns(L2, Count1+Pos1)];
 appendRunLengthEncodingWithPos([H|T], L2) -> [H|appendRunLengthEncodingWithPos(T, L2)].
 
 addIndexToRuns([], _) -> [];

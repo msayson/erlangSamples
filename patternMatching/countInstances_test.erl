@@ -31,7 +31,8 @@ appendRunLengthEncodingWithPos_test() ->
    [  ?assertEqual([], appendRunLengthEncodingWithPos([], [])),
       ?assertEqual([{a,3,4}, {b,5,7}], appendRunLengthEncodingWithPos([{a,3,4}, {b,5,7}], [])),
       ?assertEqual([{a,5,0},{b,6,5}], appendRunLengthEncodingWithPos([{a,5,0},{b,2,5}], [{b,4,7}])),
-      ?assertEqual([{a,5,0},{b,2,5},{a,2,7}], appendRunLengthEncodingWithPos([{a,5,0},{b,2,5}], [{a,2,7}]))
+      ?assertEqual([{a,5,0},{b,4,5}], appendRunLengthEncodingWithPos([{a,2,0}], [{a,3,0},{b,4,3}])),
+      ?assertEqual([{a,3,0},{b,1,3},{c,2,4},{a,2,6}], appendRunLengthEncodingWithPos([{a,3,0},{b,1,3}], [{c,2,0},{a,2,2}]))
    ].
 
 addToCounts_test() ->
